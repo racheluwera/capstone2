@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
@@ -18,7 +18,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 
-export default function WritePage() {
+function WriteContent() {
   const { user, token } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -295,5 +295,21 @@ export default function WritePage() {
         </DialogContent>
       </Dialog>
     </main>
+  )
+}
+
+export default function WritePage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen">
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <p className="text-muted-foreground">Loading editor...</p>
+          </div>
+        </div>
+      </main>
+    }>
+      <WriteContent />
+    </Suspense>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -16,7 +16,7 @@ interface SearchResults {
   tags: any[]
 }
 
-export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams()
   const initialQuery = searchParams.get('q') || ''
   
@@ -60,10 +60,9 @@ export default function SearchPage() {
   const totalResults = results.posts.length + results.users.length + results.tags.length
 
   return (
-    <main className="min-h-screen py-12">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-serif font-bold mb-6">Search</h1>
+    <div className="container mx-auto px-4 max-w-6xl">
+      <div className="mb-8">
+        <h1 className="text-4xl font-serif font-bold mb-6">Search</h1>
           <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -178,7 +177,22 @@ export default function SearchPage() {
             </TabsContent>
           </Tabs>
         )}
-      </div>
+    </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <main className="min-h-screen py-12">
+      <Suspense fallback={
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Loading search...</p>
+          </div>
+        </div>
+      }>
+        <SearchContent />
+      </Suspense>
     </main>
   )
 }
