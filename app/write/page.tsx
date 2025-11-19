@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import RichTextEditor from '@/components/rich-text-editor'
-import { Save, Eye } from 'lucide-react'
+import { Save, Eye, Upload } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -32,7 +32,7 @@ function WriteContent() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showPublishDialog, setShowPublishDialog] = useState(false)
-  const [showPreview, setShowPreview] = useState(false)
+
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -69,49 +69,7 @@ function WriteContent() {
     }
   }
 
-  const handleSaveDraft = async () => {
-    if (!title.trim()) {
-      setError('Please enter a title')
-      return
-    }
 
-    setError('')
-    setIsLoading(true)
-
-    try {
-      const postData = {
-        title,
-        content,
-        excerpt,
-        coverImage,
-        published: false,
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-      }
-
-      const url = editId ? `/api/posts/${editId}` : '/api/posts'
-      const method = editId ? 'PUT' : 'POST'
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(postData),
-      })
-
-      if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Failed to save draft')
-      }
-
-      router.push('/my-stories')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save draft')
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -191,23 +149,7 @@ function WriteContent() {
             {editId ? 'Edit Story' : 'Write a Story'}
           </h1>
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowPreview(!showPreview)}
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              {showPreview ? 'Edit' : 'Preview'}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSaveDraft}
-              disabled={isLoading}
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Save Draft
-            </Button>
+
             <Button
               size="sm"
               onClick={() => setShowPublishDialog(true)}
@@ -226,30 +168,23 @@ function WriteContent() {
           </Alert>
         )}
 
-        {!showPreview ? (
-          <div className="space-y-6">
-            <div>
-              <Input
-                type="text"
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="text-5xl font-serif font-bold border-0 px-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
-              />
-            </div>
-
-            <RichTextEditor
-              content={content}
-              onChange={setContent}
-              placeholder="Tell your story..."
+        <div className="space-y-6">
+          <div>
+            <Input
+              type="text"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="text-5xl font-serif font-bold border-0 px-0 placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </div>
-        ) : (
-          <article className="prose prose-stone prose-lg max-w-none">
-            <h1 className="text-5xl font-serif font-bold mb-8">{title || 'Untitled'}</h1>
-            <div dangerouslySetInnerHTML={{ __html: content || '<p>Start writing your story...</p>' }} />
-          </article>
-        )}
+
+          <RichTextEditor
+            content={content}
+            onChange={setContent}
+            placeholder="Tell your story..."
+          />
+        </div>
       </div>
 
       <Dialog open={showPublishDialog} onOpenChange={setShowPublishDialog}>
@@ -279,20 +214,13 @@ function WriteContent() {
             <div className="space-y-2">
               <Label htmlFor="coverImage">Cover Image</Label>
               <div className="flex gap-2">
-                <Input
-                  id="coverImage"
-                  type="url"
-                  placeholder="Upload an image or paste URL"
-                  value={coverImage}
-                  onChange={(e) => setCoverImage(e.target.value)}
-                />
                 <Button 
                   variant="outline" 
                   size="icon"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
                 >
-                  {uploading ? '⏳' : '📷'}
+                  <Upload />
                 </Button>
                 <input
                   ref={fileInputRef}

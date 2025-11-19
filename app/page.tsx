@@ -13,7 +13,7 @@ export default function Home() {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl leading-relaxed">
             Discover stories, thinking, and expertise from writers on any topic.
           </p>
-          <Link href="/login">
+          <Link href="/explore">
             <Button size="lg" className="rounded-full text-base px-8">
               Start reading
             </Button>
