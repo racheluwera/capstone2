@@ -191,28 +191,7 @@ export default function ExplorePage() {
 
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-6">
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="font-semibold mb-4 flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Trending Topics
-                  </h3>
-                  <div className="space-y-3">
-                    {trendingTags.map((tag) => (
-                      <Link
-                        key={tag.id}
-                        href={`/tag/${tag.slug}`}
-                        className="block p-3 rounded-lg hover:bg-accent transition-colors"
-                      >
-                        <div className="font-medium">#{tag.name}</div>
-                        <div className="text-xs text-muted-foreground mt-1">
-                          {tag._count.posts} {tag._count.posts === 1 ? 'story' : 'stories'}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              
 
               {!token && (
                 <Card>
