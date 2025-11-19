@@ -184,7 +184,7 @@ function WriteContent() {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="bg-gray-400 min-h-screen">
       <div className="border-b border-border bg-card sticky top-16 z-40">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <h1 className="text-xl font-serif font-semibold">

@@ -5,7 +5,7 @@ import { BookOpen, TrendingUp, Users } from 'lucide-react'
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <section className="border-b border-border bg-card">
+      <section className="bg-gray-400 border-b border-border">
         <div className="container mx-auto px-4 py-24 max-w-4xl">
           <h1 className="text-6xl md:text-7xl font-serif font-bold text-foreground mb-6 text-balance">
             Stay curious.
@@ -20,8 +20,8 @@ export default function Home() {
           </Link>
         </div>
       </section>
-<section className="  py-20">
-        <div className="flex container mx-auto px-4 max-w-6xl">
+<section className=" bg-gray-200 py-20">
+        <div className="flex space-x-10 container mx-auto px-4 max-w-6xl">
           <div className="grid md:grid-cols-3 gap-12">
             <div className="space-y-4">
               <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center">
@@ -43,6 +43,7 @@ export default function Home() {
                 Follow your favorite authors and engage with a community of passionate readers.
               </p>
             </div>
+
           </div>
         
       </section>

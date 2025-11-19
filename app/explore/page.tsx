@@ -109,7 +109,7 @@ export default function ExplorePage() {
   }
 
   return (
-    <main className="min-h-screen py-12">
+    <main className="bg-gray-400 min-h-screen py-12">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
