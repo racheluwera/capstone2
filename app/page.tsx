@@ -20,7 +20,32 @@ export default function Home() {
           </Link>
         </div>
       </section>
+<section className="  py-20">
+        <div className="flex container mx-auto px-4 max-w-6xl">
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="space-y-4">
+              <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center">
+                <BookOpen className="h-6 w-6 text-accent-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold">Diverse perspectives</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Explore millions of stories from a global community of writers, thinkers, and experts.
+              </p>
+            </div>
+            </div>
 
+            <div className="space-y-4">
+              <div className="h-12 w-12 rounded-full bg-accent flex items-center justify-center">
+                <Users className="h-6 w-6 text-accent-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold">Connect with writers</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Follow your favorite authors and engage with a community of passionate readers.
+              </p>
+            </div>
+          </div>
+        
+      </section>
     </main>
   )
 }
