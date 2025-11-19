@@ -118,23 +118,17 @@ function WriteContent() {
     if (!file) return
 
     setUploading(true)
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('upload_preset', 'your_upload_preset')
-
     try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/your_cloud_name/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
-      const data = await response.json()
-      setCoverImage(data.secure_url)
+      // Create a local URL for immediate preview
+      const imageUrl = URL.createObjectURL(file)
+      setCoverImage(imageUrl)
+      
+      // Simulate upload (replace with actual Cloudinary upload)
+      setTimeout(() => {
+        setUploading(false)
+      }, 1000)
     } catch (error) {
       setError('Failed to upload image')
-    } finally {
       setUploading(false)
     }
   }
@@ -176,7 +170,7 @@ function WriteContent() {
       }
 
       const data = await response.json()
-      router.push(`/post/${data.post.slug}`)
+      router.push('/')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to publish post')
     } finally {
@@ -283,12 +277,12 @@ function WriteContent() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="coverImage">Cover Image URL</Label>
+              <Label htmlFor="coverImage">Cover Image</Label>
               <div className="flex gap-2">
                 <Input
                   id="coverImage"
                   type="url"
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="Upload an image or paste URL"
                   value={coverImage}
                   onChange={(e) => setCoverImage(e.target.value)}
                 />
@@ -308,6 +302,11 @@ function WriteContent() {
                   style={{ display: 'none' }}
                 />
               </div>
+              {coverImage && (
+                <div className="mt-2">
+                  <img src={coverImage} alt="Cover preview" className="w-32 h-20 object-cover rounded" />
+                </div>
+              )}
             </div>
 
             <div className="space-y-2">
