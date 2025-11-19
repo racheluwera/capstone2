@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import RichTextEditor from '@/components/rich-text-editor'
-import { Save, Eye, Upload } from 'lucide-react'
+import { Save, Eye } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,8 @@ function WriteContent() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPublishDialog, setShowPublishDialog] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!user) {
@@ -108,6 +110,32 @@ function WriteContent() {
       setError(err instanceof Error ? err.message : 'Failed to save draft')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'your_upload_preset')
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/your_cloud_name/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
+      const data = await response.json()
+      setCoverImage(data.secure_url)
+    } catch (error) {
+      setError('Failed to upload image')
+    } finally {
+      setUploading(false)
     }
   }
 
@@ -264,9 +292,21 @@ function WriteContent() {
                   value={coverImage}
                   onChange={(e) => setCoverImage(e.target.value)}
                 />
-                <Button variant="outline" size="icon">
-                  <Upload className="h-4 w-4" />
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? '⏳' : '📷'}
                 </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  style={{ display: 'none' }}
+                />
               </div>
             </div>
 
