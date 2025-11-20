@@ -32,7 +32,7 @@ function WriteContent() {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showPublishDialog, setShowPublishDialog] = useState(false)
-
+  const [showPreview, setShowPreview] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -69,6 +69,49 @@ function WriteContent() {
     }
   }
 
+ const handleSaveDraft = async () => {
+    if (!title.trim()) {
+      setError('Please enter a title')
+      return
+    }
+
+    setError('')
+    setIsLoading(true)
+
+    try {
+      const postData = {
+        title,
+        content,
+        excerpt,
+        coverImage,
+        published: false,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      }
+
+      const url = editId ? `/api/posts/${editId}` : '/api/posts'
+      const method = editId ? 'PUT' : 'POST'
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(postData),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to save draft')
+      }
+
+      router.push('/my-stories')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save draft')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,6 +192,25 @@ function WriteContent() {
             {editId ? 'Edit Story' : 'Write a Story'}
           </h1>
           <div className="flex items-center gap-3">
+             <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowPreview(!showPreview)}
+
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              {showPreview ? 'Edit' : 'Preview'}
+            </Button>
+            
+              <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSaveDraft}
+              disabled={isLoading}
+            >
+              <Save className="h-4 w-4 mr-2" />
+              Save Draft
+            </Button>
 
             <Button
               size="sm"
@@ -236,8 +298,9 @@ function WriteContent() {
                 </div>
               )}
             </div>
+            </div>
 
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <Label htmlFor="tags">Tags</Label>
               <Input
                 id="tags"
@@ -249,7 +312,7 @@ function WriteContent() {
                 Separate tags with commas (max 5)
               </p>
             </div>
-          </div>
+          </div> */}
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowPublishDialog(false)}>
