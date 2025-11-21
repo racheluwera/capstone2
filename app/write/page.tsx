@@ -119,17 +119,23 @@ function WriteContent() {
     if (!file) return
 
     setUploading(true)
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'ml_default')
+
     try {
-      // Create a local URL for immediate preview
-      const imageUrl = URL.createObjectURL(file)
-      setCoverImage(imageUrl)
-      
-      // Simulate upload (replace with actual Cloudinary upload)
-      setTimeout(() => {
-        setUploading(false)
-      }, 1000)
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/dowch4rmk/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
+      const data = await response.json()
+      setCoverImage(data.secure_url)
     } catch (error) {
       setError('Failed to upload image')
+    } finally {
       setUploading(false)
     }
   }
