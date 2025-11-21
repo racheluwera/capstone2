@@ -125,7 +125,7 @@ function WriteContent() {
 
     try {
       const response = await fetch(
-        `https://api.cloudinary.com/v1_1/dowch4rmk/image/upload`,
+        `https://api.cloudinary.com/v1_1/c-8285fe24729be08e9806e7bab862d7/image/upload`,
         {
           method: 'POST',
           body: formData,

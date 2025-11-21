@@ -130,7 +130,13 @@ export default function ExplorePage() {
                 <TabsContent value="following">
                   <div className="space-y-8">
                     {feedPosts.map((post) => (
-                      <PostCard key={post.id} post={post} />
+                      <PostCard 
+                        key={post.id} 
+                        post={post} 
+                        onDelete={() => {
+                          setFeedPosts(prev => prev.filter(p => p.id !== post.id))
+                        }}
+                      />
                     ))}
                     
                     {feedPosts.length === 0 && (
@@ -150,7 +156,13 @@ export default function ExplorePage() {
               <TabsContent value="latest">
                 <div className="space-y-8">
                   {latestPosts.map((post) => (
-                    <PostCard key={post.id} post={post} />
+                    <PostCard 
+                      key={post.id} 
+                      post={post} 
+                      onDelete={() => {
+                        setLatestPosts(prev => prev.filter(p => p.id !== post.id))
+                      }}
+                    />
                   ))}
 
                   {isLoading && (

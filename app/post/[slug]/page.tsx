@@ -5,9 +5,16 @@ import { useAuth } from '@/lib/auth-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Heart, MessageCircle, Share2, Bookmark } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Heart, MessageCircle, Share2, Bookmark, MoreHorizontal, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import CommentsSection from '@/components/comments-section'
 
 interface Post {
@@ -46,11 +53,13 @@ interface Post {
 export default function PostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params)
   const { user, token } = useAuth()
+  const router = useRouter()
   const [post, setPost] = useState<Post | null>(null)
   const [isLiked, setIsLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
   const [isFollowing, setIsFollowing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchPost()
@@ -147,6 +156,26 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
     }
   }
 
+  const handleDelete = async () => {
+    if (!token || !post || !confirm('Are you sure you want to delete this post?')) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/posts/${post.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+
+      if (response.ok) {
+        router.push('/my-stories')
+      }
+    } catch (error) {
+      console.error('Failed to delete post:', error)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -188,16 +217,34 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
             </div>
           </Link>
 
-          {user && user.id !== post.author.id && (
-            <Button
-              onClick={handleFollow}
-              variant={isFollowing ? 'outline' : 'default'}
-              size="sm"
-              className="rounded-full"
-            >
-              {isFollowing ? 'Following' : 'Follow'}
-            </Button>
-          )}
+          <div className="flex items-center gap-2">
+            {user && user.id !== post.author.id && (
+              <Button
+                onClick={handleFollow}
+                variant={isFollowing ? 'outline' : 'default'}
+                size="sm"
+                className="rounded-full"
+              >
+                {isFollowing ? 'Following' : 'Follow'}
+              </Button>
+            )}
+            
+            {user && user.id === post.author.id && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={handleDelete} disabled={isDeleting}>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    {isDeleting ? 'Deleting...' : 'Delete Post'}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-6 py-4 border-y border-border mb-8">
