@@ -5,6 +5,8 @@ import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { MessageCircle, Heart } from 'lucide-react'
+import LikeButton from './like-button'
+import { Button } from './ui/button'
 
 interface PostCardProps {
   post: {
@@ -86,14 +88,13 @@ export default function PostCard({ post }: PostCardProps) {
                 {post.readTime && (
                   <span>{post.readTime} min read</span>
                 )}
-                <div className="flex items-center gap-1">
-                  <Heart className="h-4 w-4" />
-                  {post._count.likes}
-                </div>
-                <div className="flex items-center gap-1">
-                  <MessageCircle className="h-4 w-4" />
-                  {post._count.comments}
-                </div>
+                <LikeButton postId={post.id} initialCount={post._count.likes} />
+                <Link href={`/post/${post.slug}#comments`}>
+                  <Button variant="ghost" size="sm" className="flex items-center gap-1 text-muted-foreground">
+                    <MessageCircle className="h-4 w-4" />
+                    {post._count.comments}
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

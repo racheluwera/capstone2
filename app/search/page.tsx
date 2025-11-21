@@ -13,7 +13,7 @@ import PostCard from '@/components/post-card'
 interface SearchResults {
   posts: any[]
   users: any[]
-  tags: any[]
+  // tags: any[]
 }
 
 function SearchContent() {
@@ -24,7 +24,7 @@ function SearchContent() {
   const [results, setResults] = useState<SearchResults>({
     posts: [],
     users: [],
-    tags: [],
+    // tags: [],
   })
   const [isLoading, setIsLoading] = useState(false)
 
@@ -36,7 +36,7 @@ function SearchContent() {
 
   const performSearch = async (searchQuery: string) => {
     if (searchQuery.trim().length < 2) {
-      setResults({ posts: [], users: [], tags: [] })
+      setResults({ posts: [], users: [],  })
       return
     }
 
@@ -57,7 +57,7 @@ function SearchContent() {
     performSearch(query)
   }
 
-  const totalResults = results.posts.length + results.users.length + results.tags.length
+  const totalResults = results.posts.length + results.users.length 
 
   return (
     <div className="container mx-auto px-4 max-w-6xl">
@@ -67,7 +67,7 @@ function SearchContent() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search for stories, people, or tags..."
+              placeholder="Search for stories, people"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pl-10 h-12 text-lg"
@@ -100,9 +100,7 @@ function SearchContent() {
               <TabsTrigger value="users">
                 People ({results.users.length})
               </TabsTrigger>
-              <TabsTrigger value="tags">
-                Tags ({results.tags.length})
-              </TabsTrigger>
+              
             </TabsList>
 
             <TabsContent value="all" className="mt-6 space-y-8">
@@ -128,16 +126,8 @@ function SearchContent() {
                 </section>
               )}
 
-              {results.tags.length > 0 && (
-                <section>
-                  <h2 className="text-2xl font-serif font-bold mb-4">Tags</h2>
-                  <div className="flex flex-wrap gap-3">
-                    {results.tags.slice(0, 10).map((tag) => (
-                      <TagCard key={tag.id} tag={tag} />
-                    ))}
-                  </div>
-                </section>
-              )}
+              
+              
             </TabsContent>
 
             <TabsContent value="posts" className="mt-6">
@@ -164,17 +154,7 @@ function SearchContent() {
               )}
             </TabsContent>
 
-            <TabsContent value="tags" className="mt-6">
-              {results.tags.length === 0 ? (
-                <p className="text-center py-12 text-muted-foreground">No tags found</p>
-              ) : (
-                <div className="flex flex-wrap gap-3">
-                  {results.tags.map((tag) => (
-                    <TagCard key={tag.id} tag={tag} />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
+          
           </Tabs>
         )}
     </div>
