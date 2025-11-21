@@ -5,7 +5,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 
 export const metadata: Metadata = {
-  title: "Medium Clone - Where Good Ideas Find You",
+  title: "Publish ",
   description: "A modern publishing platform for writers and readers to share and discover stories, thinking, and expertise.",
     generator: 'v0.app'
 };
