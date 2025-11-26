@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { getAuthUser, unauthorizedResponse } from '@/lib/utils/auth-helper'
 
-// POST /api/upload - Handle image uploads
+// POST /api/upload - Handle image uploads via Cloudinary
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser(request)
@@ -35,13 +35,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // In a real application, you would upload to cloud storage (Cloudinary, S3, etc.)
-    // For now, we'll return a placeholder URL
-    const mockUrl = `/placeholder.svg?height=600&width=1200&query=uploaded-image-${Date.now()}`
+    // Upload to Cloudinary
+    const uploadFormData = new FormData()
+    uploadFormData.append('file', file)
+    uploadFormData.append('upload_preset', 'ml_default')
 
-    return Response.json({ url: mockUrl })
+    const cloudinaryResponse = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: 'POST',
+        body: uploadFormData,
+      }
+    )
+
+    const cloudinaryData = await cloudinaryResponse.json()
+
+    if (!cloudinaryResponse.ok || cloudinaryData.error) {
+      console.error('Cloudinary error:', cloudinaryData)
+      return Response.json(
+        { error: cloudinaryData.error?.message || 'Upload to Cloudinary failed' },
+        { status: 500 }
+      )
+    }
+
+    return Response.json({ url: cloudinaryData.secure_url })
   } catch (error) {
-    console.error('[v0] Upload error:', error)
+    console.error('Upload error:', error)
     return Response.json(
       { error: 'Internal server error' },
       { status: 500 }

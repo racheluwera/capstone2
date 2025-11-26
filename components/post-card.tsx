@@ -64,7 +64,7 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className="overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white to-purple-50/30 backdrop-blur-sm border border-purple-200">
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row gap-6 p-6">
           <div className="flex-1">
@@ -103,7 +103,7 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
                   <Link
                     key={tagItem.tag.id}
                     href={`/tag/${tagItem.tag.slug}`}
-                    className="text-xs px-3 py-1 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
+                    className="text-xs px-3 py-1 rounded-full bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:from-pink-500 hover:to-purple-600 transition-all duration-200 shadow-md hover:shadow-lg"
                   >
                     {tagItem.tag.name}
                   </Link>
@@ -142,10 +142,16 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
           {post.coverImage && (
             <div className="relative w-full md:w-48 h-48 md:h-32 flex-shrink-0">
               <Image
-                src={post.coverImage || "/placeholder.svg"}
+                src={post.coverImage}
                 alt={post.title}
                 fill
                 className="object-cover rounded"
+                unoptimized={post.coverImage.includes('cloudinary.com')}
+                onLoad={() => console.log('Image loaded successfully:', post.coverImage)}
+                onError={(e) => {
+                  console.error('Image failed to load:', post.coverImage)
+                  e.currentTarget.src = '/placeholder.svg'
+                }}
               />
             </div>
           )}

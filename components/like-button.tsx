@@ -46,7 +46,7 @@ export default function LikeButton({ postId, initialCount = 0 }: LikeButtonProps
       size="sm"
       onClick={handleLike}
       disabled={isLoading}
-      className="flex items-center gap-1 text-muted-foreground"
+      className="flex items-center gap-1 text-muted-foreground hover:text-pink-500 transition-colors"
     >
       <Heart className={`h-4 w-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
       {likeCount}

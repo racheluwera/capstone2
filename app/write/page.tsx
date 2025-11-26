@@ -28,7 +28,7 @@ function WriteContent() {
   const [content, setContent] = useState('')
   const [coverImage, setCoverImage] = useState('')
   const [excerpt, setExcerpt] = useState('')
-  const [tags, setTags] = useState('')
+
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [showPublishDialog, setShowPublishDialog] = useState(false)
@@ -62,7 +62,7 @@ function WriteContent() {
         setContent(post.content)
         setCoverImage(post.coverImage || '')
         setExcerpt(post.excerpt || '')
-        setTags(post.tags.map((t: any) => t.tag.name).join(', '))
+
       }
     } catch (error) {
       console.error('Failed to fetch post:', error)
@@ -85,7 +85,7 @@ function WriteContent() {
         excerpt,
         coverImage,
         published: false,
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        tags: [],
       }
 
       const url = editId ? `/api/posts/${editId}` : '/api/posts'
@@ -119,22 +119,32 @@ function WriteContent() {
     if (!file) return
 
     setUploading(true)
+    setError('')
+    
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('upload_preset', 'ml_default')
 
     try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/c-8285fe24729be08e9806e7bab862d7/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      })
+      
       const data = await response.json()
-      setCoverImage(data.secure_url)
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Upload failed')
+      }
+      
+      setCoverImage(data.url)
+      setError('✅ Image uploaded successfully!')
+      setTimeout(() => setError(''), 3000)
     } catch (error) {
-      setError('Failed to upload image')
+      console.error('Upload error:', error)
+      setError(`❌ ${error instanceof Error ? error.message : 'Failed to upload image'}`)
     } finally {
       setUploading(false)
     }
@@ -156,7 +166,7 @@ function WriteContent() {
         excerpt,
         coverImage,
         published: true,
-        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+        tags: [],
       }
 
       const url = editId ? `/api/posts/${editId}` : '/api/posts'
@@ -191,8 +201,8 @@ function WriteContent() {
   }
 
   return (
-    <main className="bg-gray-400 min-h-screen">
-      <div className="border-b border-border bg-card sticky top-16 z-40">
+    <main className="bg-gradient-to-br from-violet-50 via-purple-50 to-pink-100 min-h-screen">
+      <div className="border-b border-border bg-white/80 backdrop-blur-sm sticky top-16 z-40 shadow-sm">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <h1 className="text-xl font-serif font-semibold">
             {editId ? 'Edit Story' : 'Write a Story'}
@@ -222,6 +232,7 @@ function WriteContent() {
               size="sm"
               onClick={() => setShowPublishDialog(true)}
               disabled={isLoading}
+              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
             >
               Publish
             </Button>
@@ -231,7 +242,7 @@ function WriteContent() {
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {error && (
-          <Alert variant="destructive" className="mb-6">
+          <Alert variant={error.startsWith('✅') ? 'default' : 'destructive'} className="mb-6">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
@@ -284,11 +295,13 @@ function WriteContent() {
               <div className="flex gap-2">
                 <Button 
                   variant="outline" 
-                  size="icon"
+                  size="sm"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
+                  className="flex items-center gap-2"
                 >
-                  <Upload />
+                  <Upload className="h-4 w-4" />
+                  {uploading ? 'Uploading...' : 'Upload Image'}
                 </Button>
                 <input
                   ref={fileInputRef}
@@ -299,32 +312,30 @@ function WriteContent() {
                 />
               </div>
               {coverImage && (
-                <div className="mt-2">
-                  <img src={coverImage} alt="Cover preview" className="w-32 h-20 object-cover rounded" />
+                <div className="mt-3">
+                  <img 
+                    src={coverImage} 
+                    alt="Cover preview" 
+                    className="w-full max-w-md h-48 object-cover rounded-lg border"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCoverImage('')}
+                    className="mt-2"
+                  >
+                    Remove Image
+                  </Button>
                 </div>
               )}
             </div>
-            </div>
-
-            {/* <div className="space-y-2">
-              <Label htmlFor="tags">Tags</Label>
-              <Input
-                id="tags"
-                placeholder="technology, programming, design"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-              />
-              <p className="text-xs text-muted-foreground">
-                Separate tags with commas (max 5)
-              </p>
-            </div>
-          </div> */}
+          </div>
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowPublishDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handlePublish} disabled={isLoading}>
+            <Button onClick={handlePublish} disabled={isLoading} className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
               {isLoading ? 'Publishing...' : 'Publish Now'}
             </Button>
           </DialogFooter>

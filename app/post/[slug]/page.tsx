@@ -272,11 +272,16 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
         {post.coverImage && (
           <div className="relative w-full h-96 mb-8">
             <Image
-              src={post.coverImage || "/placeholder.svg"}
+              src={post.coverImage}
               alt={post.title}
               fill
               className="object-cover rounded-lg"
               priority
+              unoptimized={post.coverImage.includes('cloudinary.com')}
+              onError={(e) => {
+                console.error('Image failed to load:', post.coverImage)
+                e.currentTarget.src = '/placeholder.svg'
+              }}
             />
           </div>
         )}

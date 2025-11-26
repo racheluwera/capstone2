@@ -109,16 +109,16 @@ export default function ExplorePage() {
   }
 
   return (
-    <main className="bg-gray-400 min-h-screen py-12">
+    <main className="bg-gradient-to-br from-purple-50 via-pink-50 to-blue-100 min-h-screen py-12">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="grid lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-8">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-8 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
               Explore Stories
             </h1>
 
             <Tabs defaultValue={token && feedPosts.length > 0 ? 'following' : 'latest'} className="w-full">
-              <TabsList className="mb-8">
+              <TabsList className="mb-8 bg-white/80 backdrop-blur-sm border border-purple-200 shadow-lg">
                 {token && feedPosts.length > 0 && (
                   <TabsTrigger value="following">Following</TabsTrigger>
                 )}
@@ -213,7 +213,7 @@ export default function ExplorePage() {
                       Sign up to discover stories from writers on any topic.
                     </p>
                     <Link href="/signup">
-                      <Button className="w-full">Get started</Button>
+                      <Button className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">Get started</Button>
                     </Link>
                   </CardContent>
                 </Card>
