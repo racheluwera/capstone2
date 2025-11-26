@@ -32,45 +32,45 @@ A modern blog platform built with Next.js, featuring user authentication, rich t
 ### Installation
 
 1. Clone the repository
-```bash
+
 git clone <repository-url>
 cd code
-```
+
 
 2. Install dependencies
-```bash
+
 npm install
-```
+
 
 3. Set up environment variables
-```bash
+
 cp .env.example .env
-```
+
 
 Fill in your environment variables:
-```env
+env
 DATABASE_URL="your-postgresql-connection-string"
 JWT_SECRET="your-jwt-secret"
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your-cloudinary-cloud-name"
 CLOUDINARY_API_KEY="your-cloudinary-api-key"
 CLOUDINARY_API_SECRET="your-cloudinary-api-secret"
-```
+
 
 4. Set up the database
-```bash
+
 npx prisma migrate dev
-```
+
 
 5. Run the development server
-```bash
+
 npm run dev
-```
+
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ## Project Structure
 
-```
+
 ├── app/                    # Next.js app directory
 │   ├── api/               # API routes
 │   ├── explore/           # Explore page
@@ -88,7 +88,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 │   └── cloudinary.ts     # Image upload utilities
 ├── prisma/               # Database schema and migrations
 └── public/               # Static assets
-```
+
 
 ## Key Features
 
