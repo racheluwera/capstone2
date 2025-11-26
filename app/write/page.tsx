@@ -169,6 +169,8 @@ function WriteContent() {
         tags: [],
       }
 
+      console.log('Publishing post with coverImage:', coverImage)
+
       const url = editId ? `/api/posts/${editId}` : '/api/posts'
       const method = editId ? 'PUT' : 'POST'
 

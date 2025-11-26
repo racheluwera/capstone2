@@ -89,12 +89,7 @@ export default function Header() {
                       Profile
                     </Link>
                   </DropdownMenuItem>
-                  {/* <DropdownMenuItem asChild>
-                    <Link href="/my-stories" className="cursor-pointer">
-                      <BookOpen className="mr-2 h-4 w-4" />
-                      My Stories
-                    </Link>
-                  </DropdownMenuItem> */}
+                 ?
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout} className="cursor-pointer text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />

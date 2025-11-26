@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server'
 import { getAuthUser, unauthorizedResponse } from '@/lib/utils/auth-helper'
+import { writeFile, mkdir } from 'fs/promises'
+import { join } from 'path'
+import { existsSync } from 'fs'
 
-// POST /api/upload - Handle image uploads via Cloudinary
+// POST /api/upload - Handle image uploads
 export async function POST(request: NextRequest) {
   try {
     const user = await getAuthUser(request)
@@ -35,30 +38,26 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Upload to Cloudinary
-    const uploadFormData = new FormData()
-    uploadFormData.append('file', file)
-    uploadFormData.append('upload_preset', 'ml_default')
-
-    const cloudinaryResponse = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-      {
-        method: 'POST',
-        body: uploadFormData,
-      }
-    )
-
-    const cloudinaryData = await cloudinaryResponse.json()
-
-    if (!cloudinaryResponse.ok || cloudinaryData.error) {
-      console.error('Cloudinary error:', cloudinaryData)
-      return Response.json(
-        { error: cloudinaryData.error?.message || 'Upload to Cloudinary failed' },
-        { status: 500 }
-      )
+    // Create uploads directory
+    const uploadsDir = join(process.cwd(), 'public', 'uploads')
+    if (!existsSync(uploadsDir)) {
+      await mkdir(uploadsDir, { recursive: true })
     }
 
-    return Response.json({ url: cloudinaryData.secure_url })
+    // Generate unique filename
+    const timestamp = Date.now()
+    const extension = file.name.split('.').pop() || 'jpg'
+    const filename = `${timestamp}-${Math.random().toString(36).substring(2)}.${extension}`
+    const filepath = join(uploadsDir, filename)
+
+    // Save file
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+    await writeFile(filepath, buffer)
+
+    // Return public URL
+    const url = `/uploads/${filename}`
+    return Response.json({ url })
   } catch (error) {
     console.error('Upload error:', error)
     return Response.json(
