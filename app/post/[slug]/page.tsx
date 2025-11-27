@@ -58,6 +58,7 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
   const [isLiked, setIsLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)
   const [isFollowing, setIsFollowing] = useState(false)
+  const [followerCount, setFollowerCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -78,6 +79,7 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
       if (response.ok) {
         setPost(data.post)
         setLikeCount(data.post._count.likes)
+        setFollowerCount(data.post.author._count.followers)
         
         if (user) {
           // Check if user liked this post
@@ -137,6 +139,7 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
 
       if (response.ok) {
         setIsFollowing(!isFollowing)
+        setFollowerCount(prev => isFollowing ? prev - 1 : prev + 1)
       }
     } catch (error) {
       console.error('Failed to toggle follow:', error)
@@ -318,7 +321,7 @@ export default function PostPage({ params }: { params: Promise<{ slug: string }>
             <div>
               <p className="font-semibold text-lg">{post.author.name}</p>
               <p className="text-muted-foreground text-sm mb-1">
-                {post.author._count.followers} Followers
+                {followerCount} Followers
               </p>
               {post.author.bio && (
                 <p className="text-sm line-clamp-2">{post.author.bio}</p>

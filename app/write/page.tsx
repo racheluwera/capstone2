@@ -123,23 +123,24 @@ function WriteContent() {
     
     const formData = new FormData()
     formData.append('file', file)
+    formData.append('upload_preset', 'blog_uploads')
 
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData,
-      })
+      const response = await fetch(
+        'https://api.cloudinary.com/v1_1/dowch4rmk/image/upload',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
       
       const data = await response.json()
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Upload failed')
+      if (!response.ok || data.error) {
+        throw new Error(data.error?.message || 'Upload failed')
       }
       
-      setCoverImage(data.url)
+      setCoverImage(data.secure_url)
       setError('✅ Image uploaded successfully!')
       setTimeout(() => setError(''), 3000)
     } catch (error) {
