@@ -204,7 +204,7 @@ function WriteContent() {
   }
 
   return (
-    <main className="bg-gradient-to-br from-violet-50 via-purple-50 to-pink-100 min-h-screen">
+    <main className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-100 min-h-screen">
       <div className="border-b border-border bg-white/80 backdrop-blur-sm sticky top-16 z-40 shadow-sm">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <h1 className="text-xl font-serif font-semibold">
@@ -235,7 +235,7 @@ function WriteContent() {
               size="sm"
               onClick={() => setShowPublishDialog(true)}
               disabled={isLoading}
-              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+              className="bg-gradient-to-r from-slate-700 to-gray-800 hover:from-slate-800 hover:to-gray-900"
             >
               Publish
             </Button>
@@ -338,7 +338,7 @@ function WriteContent() {
             <Button variant="outline" onClick={() => setShowPublishDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handlePublish} disabled={isLoading} className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
+            <Button onClick={handlePublish} disabled={isLoading} className="bg-gradient-to-r from-slate-700 to-gray-800 hover:from-slate-800 hover:to-gray-900">
               {isLoading ? 'Publishing...' : 'Publish Now'}
             </Button>
           </DialogFooter>

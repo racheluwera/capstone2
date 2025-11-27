@@ -64,7 +64,7 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
   }
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white to-purple-50/30 backdrop-blur-sm border border-purple-200">
+    <Card className="overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-300 bg-gradient-to-br from-white to-slate-50/30 backdrop-blur-sm border border-slate-200">
       <CardContent className="p-0">
         <div className="flex flex-col md:flex-row gap-6 p-6">
           <div className="flex-1">
@@ -103,7 +103,7 @@ export default function PostCard({ post, onDelete }: PostCardProps) {
                   <Link
                     key={tagItem.tag.id}
                     href={`/tag/${tagItem.tag.slug}`}
-                    className="text-xs px-3 py-1 rounded-full bg-gradient-to-r from-pink-400 to-purple-500 text-white hover:from-pink-500 hover:to-purple-600 transition-all duration-200 shadow-md hover:shadow-lg"
+                    className="text-xs px-3 py-1 rounded-full bg-gradient-to-r from-slate-600 to-gray-700 text-white hover:from-slate-700 hover:to-gray-800 transition-all duration-200 shadow-md hover:shadow-lg"
                   >
                     {tagItem.tag.name}
                   </Link>
